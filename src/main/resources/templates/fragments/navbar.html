@@ -35,6 +35,24 @@
                     Video Data
                 </a>
 
+                <!-- Transcript -->
+
+                <a href="/api/transcript"
+                   class="text-slate-700 dark:text-slate-300
+          hover:text-blue-600
+          dark:hover:text-blue-400
+          transition-colors duration-200
+          py-2 px-3 rounded-lg"
+
+                   th:classappend="${activePage} == 'transcript'
+                   ? 'text-blue-600 dark:text-blue-400
+                      font-semibold
+                      bg-blue-50 dark:bg-blue-900/20'">
+
+                    Transcript
+
+                </a>
+
                 <!-- Theme Toggle Button -->
                 <button id="themeToggle"
                         type="button"
