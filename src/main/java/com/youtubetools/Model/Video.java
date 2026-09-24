@@ -14,7 +14,22 @@ import java.util.List;
 public class Video {
 
     private String id;
+
     private String channelTitle;
+
     private String title;
+
     private List<String> tags;
+
+
+    public String getThumbnailUrl() {
+
+        if (id == null || id.isBlank()) {
+            return null;
+        }
+
+        return "https://img.youtube.com/vi/"
+                + id
+                + "/maxresdefault.jpg";
+    }
 }

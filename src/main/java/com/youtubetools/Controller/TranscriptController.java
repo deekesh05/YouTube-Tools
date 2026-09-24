@@ -1,38 +1,89 @@
 package com.youtubetools.Controller;
 
+import com.youtubetools.Service.HistoryService;
 import com.youtubetools.Service.TranscriptService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
+@RequiredArgsConstructor
 public class TranscriptController {
 
-    @Autowired
-    private TranscriptService transcriptService;
+    private final TranscriptService transcriptService;
+    private final HistoryService historyService;
 
-    // Open transcript page
+
     @GetMapping("/transcript")
     public String transcriptPage() {
+
         return "transcript";
     }
 
-    // Get transcript
+
     @PostMapping("/transcript")
     public String getTranscript(
+
             @RequestParam("videoUrl") String videoUrl,
-            Model model) {
+
+            Model model,
+
+            Authentication authentication) {
 
         try {
 
             String transcript =
-                    transcriptService.getTranscriptFromUrl(videoUrl);
+                    transcriptService.getTranscriptFromUrl(
+                            videoUrl
+                    );
 
-            model.addAttribute("transcript", transcript);
-            model.addAttribute("videoUrl", videoUrl);
+
+            model.addAttribute(
+                    "transcript",
+                    transcript
+            );
+
+            model.addAttribute(
+                    "videoUrl",
+                    videoUrl
+            );
+
+
+            // =====================================================
+            // EXTRACT VIDEO ID
+            // =====================================================
+
+            String videoId =
+                    extractVideoId(videoUrl);
+
+
+            // =====================================================
+            // SAVE HISTORY
+            // =====================================================
+
+            if (authentication != null &&
+                    authentication.isAuthenticated()) {
+
+                historyService.saveHistory(
+
+                        authentication,
+
+                        "TRANSCRIPT",
+
+                        videoId,
+
+                        "YouTube Transcript",
+
+                        "https://img.youtube.com/vi/"
+                                + videoId
+                                + "/hqdefault.jpg",
+
+                        videoUrl
+                );
+            }
+
 
         } catch (Exception e) {
 
@@ -43,9 +94,47 @@ public class TranscriptController {
                     "Transcript could not be retrieved for this video."
             );
 
-            model.addAttribute("videoUrl", videoUrl);
+            model.addAttribute(
+                    "videoUrl",
+                    videoUrl
+            );
         }
 
+
         return "transcript";
+    }
+
+
+    // =========================================================
+    // VIDEO ID EXTRACTION
+    // =========================================================
+
+    private String extractVideoId(String url) {
+
+        if (url == null || url.isBlank()) {
+
+            return null;
+        }
+
+        url = url.trim();
+
+
+        if (url.contains("v=")) {
+
+            return url
+                    .split("v=")[1]
+                    .split("&")[0];
+        }
+
+
+        if (url.contains("youtu.be/")) {
+
+            return url
+                    .split("youtu.be/")[1]
+                    .split("\\?")[0];
+        }
+
+
+        return null;
     }
 }

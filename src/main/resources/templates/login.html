@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Login - YouTube Tools</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body class="bg-slate-50 min-h-screen
+             flex items-center justify-center">
+
+<div class="w-full max-w-md px-4">
+
+    <div class="bg-white
+                rounded-2xl
+                shadow-lg
+                border border-slate-200
+                p-8">
+
+        <div class="text-center mb-8">
+
+            <h1 class="text-3xl
+                       font-bold
+                       text-slate-900">
+
+                Welcome Back
+
+            </h1>
+
+            <p class="text-slate-500 mt-2">
+
+                Login to YouTube Tools
+
+            </p>
+
+        </div>
+
+
+        <!-- Login Error -->
+
+        <div th:if="${param.error}"
+             class="bg-red-50
+                    text-red-600
+                    border-l-4
+                    border-red-500
+                    p-4
+                    rounded-lg
+                    mb-5">
+
+            Invalid email or password.
+
+        </div>
+
+
+        <!-- Logout -->
+
+        <div th:if="${param.logout}"
+             class="bg-green-50
+                    text-green-600
+                    border-l-4
+                    border-green-500
+                    p-4
+                    rounded-lg
+                    mb-5">
+
+            You have been logged out.
+
+        </div>
+
+
+        <!-- Registration Success -->
+
+        <div th:if="${param.registered}"
+             class="bg-green-50
+                    text-green-600
+                    border-l-4
+                    border-green-500
+                    p-4
+                    rounded-lg
+                    mb-5">
+
+            Account created successfully.
+            Please login.
+
+        </div>
+
+
+        <form th:action="@{/login}"
+              method="post">
+
+
+            <!-- CSRF -->
+
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}">
+
+
+            <!-- Email -->
+
+            <div class="mb-5">
+
+                <label
+                        class="block text-sm
+                               font-medium
+                               text-slate-700
+                               mb-2">
+
+                    Email
+
+                </label>
+
+                <input
+                        type="email"
+                        name="username"
+                        placeholder="Enter your email"
+                        required
+
+                        class="w-full
+                               px-4 py-3
+                               border
+                               border-slate-300
+                               rounded-lg
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500">
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div class="mb-6">
+
+                <label
+                        class="block text-sm
+                               font-medium
+                               text-slate-700
+                               mb-2">
+
+                    Password
+
+                </label>
+
+                <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        required
+
+                        class="w-full
+                               px-4 py-3
+                               border
+                               border-slate-300
+                               rounded-lg
+                               focus:outline-none
+                               focus:ring-2
+                               focus:ring-blue-500">
+
+            </div>
+
+
+            <button
+                    type="submit"
+
+                    class="w-full
+                           bg-blue-600
+                           hover:bg-blue-700
+                           text-white
+                           font-medium
+                           py-3
+                           rounded-lg
+                           transition">
+
+                Sign In
+
+            </button>
+
+        </form>
+
+
+        <div class="text-center mt-6">
+
+            <span class="text-slate-500">
+                Don't have an account?
+            </span>
+
+            <a href="/register"
+               class="text-blue-600
+                      hover:text-blue-700
+                      font-medium">
+
+                Create Account
+
+            </a>
+
+        </div>
+
+
+        <div class="text-center mt-4">
+
+            <a href="/"
+               class="text-sm
+                      text-slate-500
+                      hover:text-blue-600">
+
+                Continue as Guest
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
