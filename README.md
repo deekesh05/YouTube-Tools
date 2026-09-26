@@ -163,6 +163,18 @@ The application also includes authentication, user-specific history, favorites, 
 
 ![Profile](screenshots/profile.png)
 
+### 💾 Saved Data
+
+![Saved Data](screenshots/saved-data.png)
+
+### 🔐 Login
+
+![Login](screenshots/login.png)
+
+### 📝 Registration
+
+![Registration](screenshots/signup.png)
+
 ---
 
 # 🎥 Demo Flow
