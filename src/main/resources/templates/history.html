@@ -20,7 +20,7 @@
     <script>
         tailwind.config = {
             darkMode: 'class'
-        }
+        };
     </script>
 
 </head>
@@ -33,51 +33,67 @@
              dark:text-slate-100">
 
 
-<!-- =========================================================
-     NAVBAR
-========================================================= -->
-
 <div
         th:replace="~{fragments/navbar :: navbar}"
         th:with="activePage='history'">
 </div>
 
 
-<!-- =========================================================
-     MAIN CONTAINER
-========================================================= -->
+<div class="container mx-auto
+            px-4
+            max-w-6xl
+            mt-10
+            pb-12">
 
-<div class="container mx-auto px-4 max-w-6xl mt-12 pb-12">
 
-
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+    <!-- HEADER -->
 
     <div class="flex flex-col
                 md:flex-row
                 justify-between
-                items-center
+                items-start
+                md:items-center
                 gap-4
-                mb-10">
+                mb-8">
 
 
         <div>
 
-            <h1 class="text-4xl
-                       md:text-5xl
-                       font-extrabold
-                       text-blue-600
-                       dark:text-blue-400">
+            <div class="flex items-center gap-3">
 
-                History
+                <div class="w-11
+                            h-11
+                            rounded-xl
+                            bg-blue-100
+                            dark:bg-blue-900/30
+                            flex
+                            items-center
+                            justify-center">
 
-            </h1>
+                    <i class="bi bi-clock-history
+                              text-xl
+                              text-blue-600
+                              dark:text-blue-400">
+                    </i>
+
+                </div>
+
+                <h1 class="text-4xl
+                           md:text-5xl
+                           font-extrabold
+                           text-blue-600
+                           dark:text-blue-400">
+
+                    History
+
+                </h1>
+
+            </div>
 
 
             <p class="text-slate-600
                       dark:text-slate-400
-                      mt-2">
+                      mt-3">
 
                 View your recently used YouTube Tools.
 
@@ -100,6 +116,7 @@
                         th:name="${_csrf.parameterName}"
                         th:value="${_csrf.token}">
 
+
                 <button
                         type="submit"
                         class="bg-red-500
@@ -112,7 +129,9 @@
                                flex
                                items-center
                                gap-2
-                               transition">
+                               shadow-md
+                               hover:shadow-red-500/20
+                               transition-all">
 
                     <i class="bi bi-trash3"></i>
 
@@ -127,9 +146,7 @@
     </div>
 
 
-    <!-- =====================================================
-         EMPTY STATE
-    ====================================================== -->
+    <!-- EMPTY STATE -->
 
     <div
             th:if="${#lists.isEmpty(historyList)}"
@@ -140,15 +157,27 @@
                    border-slate-200
                    dark:border-slate-700
                    rounded-2xl
-                   shadow-lg
+                   shadow-xl
                    p-12
                    text-center">
 
 
-        <i class="bi bi-clock-history
-                  text-6xl
-                  text-slate-400">
-        </i>
+        <div class="w-20
+                    h-20
+                    mx-auto
+                    rounded-full
+                    bg-slate-100
+                    dark:bg-slate-700
+                    flex
+                    items-center
+                    justify-center">
+
+            <i class="bi bi-clock-history
+                      text-4xl
+                      text-slate-400">
+            </i>
+
+        </div>
 
 
         <h2 class="text-2xl
@@ -162,7 +191,9 @@
 
         <p class="text-slate-500
                   dark:text-slate-400
-                  mt-3">
+                  mt-3
+                  max-w-md
+                  mx-auto">
 
             Start using YouTube Tools and your activity
             will appear here.
@@ -194,9 +225,7 @@
     </div>
 
 
-    <!-- =====================================================
-         HISTORY LIST
-    ====================================================== -->
+    <!-- HISTORY LIST -->
 
     <div
             th:if="${!#lists.isEmpty(historyList)}"
@@ -213,9 +242,11 @@
                        dark:border-slate-700
                        rounded-2xl
                        shadow-md
-                       hover:shadow-lg
+                       hover:shadow-xl
+                       hover:-translate-y-0.5
                        p-5
-                       transition">
+                       transition-all
+                       duration-200">
 
 
             <div class="flex flex-col
@@ -223,15 +254,12 @@
                         gap-5">
 
 
-                <!-- =================================================
-                     THUMBNAIL
-                ================================================== -->
+                <!-- THUMBNAIL -->
 
                 <div
                         th:if="${history.thumbnailUrl != null}"
                         class="md:w-56
                                flex-shrink-0">
-
 
                     <img
                             th:src="${history.thumbnailUrl}"
@@ -242,25 +270,24 @@
                                    object-cover
                                    rounded-xl">
 
-
                 </div>
 
 
-                <!-- =================================================
-                     CONTENT
-                ================================================== -->
+                <!-- CONTENT -->
 
                 <div class="flex-1">
 
 
-                    <!-- TOOL TYPE -->
-
                     <div class="flex
-                                items-center
-                                justify-between
-                                gap-3
+                                flex-col
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
+                                gap-2
                                 mb-3">
 
+
+                        <!-- TOOL -->
 
                         <span
                                 class="inline-flex
@@ -274,14 +301,12 @@
                                        py-1
                                        rounded-full
                                        text-xs
-                                       font-semibold">
-
+                                       font-semibold
+                                       w-fit">
 
                             <i class="bi bi-tools"></i>
 
-                            <span
-                                    th:text="${history.toolType}">
-                            </span>
+                            <span th:text="${history.toolType}"></span>
 
                         </span>
 
@@ -290,8 +315,13 @@
 
                         <span
                                 class="text-xs
-                                       text-slate-400"
-                                th:text="${history.createdAt}">
+                                       text-slate-400
+                                       whitespace-nowrap"
+
+                                th:text="${#temporals.format(
+                                    history.createdAt,
+                                    'dd MMM yyyy, hh:mm a'
+                                )}">
 
                         </span>
 
@@ -304,7 +334,8 @@
                             class="text-xl
                                    font-semibold
                                    text-slate-900
-                                   dark:text-slate-100"
+                                   dark:text-slate-100
+                                   line-clamp-2"
 
                             th:text="${history.title != null
                                       ? history.title
@@ -322,7 +353,8 @@
                                    text-slate-500
                                    dark:text-slate-400
                                    mt-2
-                                   break-all"
+                                   break-all
+                                   line-clamp-2"
 
                             th:text="${history.input}">
 
@@ -340,16 +372,12 @@
 
                         Video ID:
 
-                        <span
-                                th:text="${history.videoId}">
-                        </span>
+                        <span th:text="${history.videoId}"></span>
 
                     </p>
 
 
-                    <!-- =================================================
-                         ACTIONS
-                    ================================================== -->
+                    <!-- ACTIONS -->
 
                     <div
                             class="flex
@@ -358,8 +386,6 @@
                                    gap-3
                                    mt-5">
 
-
-                        <!-- OPEN TOOL -->
 
                         <a
                                 th:href="${history.toolType == 'SEO_TAGS'
@@ -385,7 +411,6 @@
                                        gap-2
                                        transition">
 
-
                             <i class="bi bi-box-arrow-up-right"></i>
 
                             Open Tool
@@ -393,13 +418,10 @@
                         </a>
 
 
-                        <!-- DELETE -->
-
                         <form
                                 th:action="@{/history/delete/{id}(id=${history.id})}"
                                 method="post"
                                 onsubmit="return confirmDelete();">
-
 
                             <input
                                     type="hidden"
@@ -423,7 +445,6 @@
                                            gap-2
                                            transition">
 
-
                                 <i class="bi bi-trash"></i>
 
                                 Delete
@@ -444,10 +465,6 @@
 
 </div>
 
-
-<!-- =========================================================
-     JAVASCRIPT
-========================================================= -->
 
 <script>
 
@@ -472,5 +489,4 @@
 
 
 </body>
-
 </html>

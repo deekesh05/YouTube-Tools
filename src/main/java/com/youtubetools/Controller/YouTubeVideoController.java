@@ -1,6 +1,13 @@
 package com.youtubetools.Controller;
 
+
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.reactive.function.client.WebClient;
 import com.youtubetools.Model.VideoDetails;
+import com.youtubetools.Service.FavoriteService;
 import com.youtubetools.Service.HistoryService;
 import com.youtubetools.Service.ThumbnailService;
 import com.youtubetools.Service.YouTubeService;
@@ -18,6 +25,7 @@ public class YouTubeVideoController {
     private final YouTubeService youTubeService;
     private final ThumbnailService thumbnailService;
     private final HistoryService historyService;
+    private final FavoriteService favoriteService;
 
 
     @GetMapping("/video-details")
@@ -106,9 +114,27 @@ public class YouTubeVideoController {
             );
 
 
-            // =====================================================
+            // FAVORITE STATUS
+
+            boolean isFavorite = false;
+
+            if (authentication != null &&
+                    authentication.isAuthenticated()) {
+
+                isFavorite =
+                        favoriteService.isFavorite(
+                                authentication,
+                                videoId
+                        );
+            }
+
+            model.addAttribute(
+                    "isFavorite",
+                    isFavorite
+            );
+
+
             // SAVE HISTORY
-            // =====================================================
 
             if (authentication != null &&
                     authentication.isAuthenticated()) {
@@ -135,10 +161,13 @@ public class YouTubeVideoController {
 
         } catch (Exception e) {
 
+            // Actual exception console me rahegi
+            e.printStackTrace();
+
+            // User ko technical/API details nahi dikhani
             model.addAttribute(
                     "error",
-                    "Unable to fetch video details: "
-                            + e.getMessage()
+                    "Unable to fetch video data. Please try again later."
             );
 
             model.addAttribute(
@@ -147,6 +176,66 @@ public class YouTubeVideoController {
             );
 
             return "video-details";
+        }
+    }
+
+
+    // =====================================================
+    // DOWNLOAD YOUTUBE THUMBNAIL
+    // =====================================================
+
+    @GetMapping("/download-thumbnail")
+    public ResponseEntity<byte[]> downloadThumbnail(
+            @RequestParam("videoUrlOrId") String videoUrlOrId) {
+
+        try {
+
+            String videoId =
+                    thumbnailService.extractVideoId(videoUrlOrId);
+
+            if (videoId == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            String thumbnailUrl =
+                    "https://i.ytimg.com/vi/"
+                            + videoId
+                            + "/maxresdefault.jpg";
+
+            byte[] image = WebClient.create()
+                    .get()
+                    .uri(thumbnailUrl)
+                    .retrieve()
+                    .bodyToMono(byte[].class)
+                    .block();
+
+            if (image == null || image.length == 0) {
+                return ResponseEntity.notFound().build();
+            }
+
+            HttpHeaders headers = new HttpHeaders();
+
+            headers.setContentType(MediaType.IMAGE_JPEG);
+
+            headers.setContentDisposition(
+                    ContentDisposition.attachment()
+                            .filename(
+                                    "youtube-thumbnail-"
+                                            + videoId
+                                            + ".jpg"
+                            )
+                            .build()
+            );
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(image);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

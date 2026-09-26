@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +11,11 @@
     <style>
         /* Keep your previous CSS styles as they are */
     </style>
+    <meta name="_csrf"
+          th:content="${_csrf.token}">
+
+    <meta name="_csrf_header"
+          th:content="${_csrf.headerName}">
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen dark:bg-slate-900 dark:text-slate-100">
 <div th:replace="fragments/navbar :: navbar" th:with="activePage='video'"></div>
@@ -23,12 +30,28 @@
 
     <!-- Form -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg p-6 mb-8">
-        <form th:action="@{/youtube/video-details}" method="post">
+        <form id="videoDataForm"
+              th:action="@{/youtube/video-details}"
+              method="post">
             <label for="videoUrlOrId" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">YouTube Video URL or ID</label>
             <input type="text" id="videoUrlOrId" name="videoUrlOrId"
                    class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 mb-4"
                    required th:value="${videoUrlOrId}">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg shadow-lg">Fetch Video Data</button>
+            <button
+                    id="videoDataSubmitBtn"
+                    type="submit"
+                    class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg">
+
+    <span id="videoDataBtnText">
+        <i class="bi bi-play-circle"></i>
+        Get Video Data
+    </span>
+
+                <span id="videoDataLoadingText" class="hidden">
+        <i class="bi bi-arrow-repeat animate-spin"></i>
+        Fetching video data...
+    </span>
+            </button>
         </form>
 
         <div th:if="${error}" class="error rounded-lg p-4 mt-4" th:text="${error}"></div>
@@ -44,7 +67,8 @@
                     </div>
                     <div class="mt-4 flex justify-end">
                         <a class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-lg"
-                           th:href="${videoDetails.thumbnailUrl}" th:download="${videoDetails.title + '-thumb.jpg'}">
+                           th:href="@{/youtube/download-thumbnail(videoUrlOrId=${videoDetails.videoUrlOrId})}">
+
                             <i class="bi bi-download"></i> Download
                         </a>
                     </div>
@@ -56,6 +80,55 @@
                     <div class="text-slate-600 dark:text-slate-400 mb-4">
                         <i class="bi bi-person-video"></i> <span th:text="${videoDetails.channelTitle}"></span> &bull;
                         <i class="bi bi-calendar3"></i> <span th:text="${videoDetails.publishedAt}"></span>
+                    </div>
+                    <div sec:authorize="isAuthenticated()" class="mb-6">
+
+                        <button
+                                type="button"
+                                id="videoFavoriteBtn"
+
+                                class="favorite-btn
+                   text-white
+                   text-sm
+                   font-medium
+                   py-2
+                   px-4
+                   rounded-lg
+                   transition-colors
+                   duration-200
+                   flex
+                   items-center
+                   gap-2"
+
+                                th:classappend="${isFavorite}
+                ? ' bg-green-600 hover:bg-green-700'
+                : ' bg-yellow-500 hover:bg-yellow-600'"
+
+                                th:data-video-id="${videoDetails.videoUrlOrId}"
+
+                                th:data-title="${videoDetails.title}"
+
+                                th:data-thumbnail="${videoDetails.thumbnailUrl}"
+
+                                th:data-channel="${videoDetails.channelTitle}"
+
+                                th:disabled="${isFavorite}">
+
+                            <i
+                                    class="bi"
+                                    th:classappend="${isFavorite}
+                    ? ' bi-star-fill'
+                    : ' bi-star'">
+                            </i>
+
+                            <span
+                                    th:text="${isFavorite}
+                    ? 'Already in Favorites'
+                    : 'Add to Favorites'">
+        </span>
+
+                        </button>
+
                     </div>
                     <div class="mb-6">
                         <h3 class="font-bold mb-2"><i class="bi bi-text-paragraph text-blue-500"></i> Description</h3>
@@ -82,6 +155,22 @@
             .then(() => alert("Copied!"))
             .catch(() => alert("Could not copy text."));
     }
+</script>
+<script>
+    document.getElementById("videoDataForm")?.addEventListener("submit", function () {
+
+        const button = document.getElementById("videoDataSubmitBtn");
+        const normalText = document.getElementById("videoDataBtnText");
+        const loadingText = document.getElementById("videoDataLoadingText");
+
+        if (!button) return;
+
+        button.disabled = true;
+        button.classList.add("opacity-70", "cursor-not-allowed");
+
+        normalText.classList.add("hidden");
+        loadingText.classList.remove("hidden");
+    });
 </script>
 </body>
 </html>

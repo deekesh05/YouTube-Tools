@@ -1,5 +1,6 @@
 package com.youtubetools.Controller;
 
+import com.youtubetools.Service.FavoriteService;
 import com.youtubetools.Service.HistoryService;
 import com.youtubetools.Service.TranscriptService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ public class TranscriptController {
 
     private final TranscriptService transcriptService;
     private final HistoryService historyService;
+    private final FavoriteService favoriteService;
 
 
     @GetMapping("/transcript")
@@ -26,7 +28,8 @@ public class TranscriptController {
     @PostMapping("/transcript")
     public String getTranscript(
 
-            @RequestParam("videoUrl") String videoUrl,
+            @RequestParam("videoUrl")
+            String videoUrl,
 
             Model model,
 
@@ -45,18 +48,45 @@ public class TranscriptController {
                     transcript
             );
 
+
             model.addAttribute(
                     "videoUrl",
                     videoUrl
             );
 
 
-            // =====================================================
-            // EXTRACT VIDEO ID
-            // =====================================================
-
             String videoId =
                     extractVideoId(videoUrl);
+
+
+            model.addAttribute(
+                    "videoId",
+                    videoId
+            );
+
+
+            // =====================================================
+            // FAVORITE STATUS
+            // =====================================================
+
+            boolean isFavorite = false;
+
+            if (authentication != null &&
+                    authentication.isAuthenticated() &&
+                    videoId != null) {
+
+                isFavorite =
+                        favoriteService.isFavorite(
+                                authentication,
+                                videoId
+                        );
+            }
+
+
+            model.addAttribute(
+                    "isFavorite",
+                    isFavorite
+            );
 
 
             // =====================================================
@@ -105,16 +135,14 @@ public class TranscriptController {
     }
 
 
-    // =========================================================
-    // VIDEO ID EXTRACTION
-    // =========================================================
-
     private String extractVideoId(String url) {
 
-        if (url == null || url.isBlank()) {
+        if (url == null ||
+                url.isBlank()) {
 
             return null;
         }
+
 
         url = url.trim();
 

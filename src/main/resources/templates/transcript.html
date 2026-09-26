@@ -1,7 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
+    <meta name="_csrf"
+          th:content="${_csrf.token}">
+
+    <meta name="_csrf_header"
+          th:content="${_csrf.headerName}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -123,7 +130,8 @@
                 shadow-lg
                 p-6 mb-8">
 
-        <form th:action="@{/transcript}"
+        <form id="transcriptForm"
+              th:action="@{/transcript}"
               method="post">
 
             <label
@@ -160,27 +168,19 @@
 
 
             <button
+                    id="transcriptSubmitBtn"
                     type="submit"
+                    class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg">
 
-                    class="w-full
-                           bg-blue-600
-                           hover:bg-blue-700
-                           text-white
-                           font-medium
-                           py-3 px-6
-                           rounded-lg
-                           shadow-lg
-                           transition-colors duration-200
+    <span id="transcriptBtnText">
+        <i class="bi bi-file-text"></i>
+        Extract Transcript
+    </span>
 
-                           flex
-                           items-center
-                           justify-center
-                           gap-2">
-
-                <i class="bi bi-file-text"></i>
-
-                Get Transcript
-
+                <span id="transcriptLoadingText" class="hidden">
+        <i class="bi bi-arrow-repeat animate-spin"></i>
+        Extracting transcript...
+    </span>
             </button>
 
         </form>
@@ -315,6 +315,49 @@
             Transcript copied to clipboard!
 
         </div>
+        <button
+                sec:authorize="isAuthenticated()"
+                type="button"
+                id="transcriptFavoriteBtn"
+
+                class="text-white
+               text-sm
+               font-medium
+               py-2 px-4
+               rounded-lg
+               flex
+               items-center
+               gap-2
+               transition-colors duration-200"
+
+                th:classappend="${isFavorite}
+            ? ' bg-green-600 hover:bg-green-700'
+            : ' bg-yellow-500 hover:bg-yellow-600'"
+
+                th:data-video-id="${videoId}"
+
+                th:data-title="'YouTube Transcript'"
+
+                th:data-thumbnail="'https://img.youtube.com/vi/' + ${videoId} + '/hqdefault.jpg'"
+
+                th:data-channel="'YouTube'"
+
+                th:disabled="${isFavorite}">
+
+            <i
+                    class="bi"
+                    th:classappend="${isFavorite}
+                ? ' bi-star-fill'
+                : ' bi-star'">
+            </i>
+
+            <span
+                    th:text="${isFavorite}
+                ? 'Already in Favorites'
+                : 'Add to Favorites'">
+    </span>
+
+        </button>
 
     </div>
 
@@ -353,8 +396,158 @@
     }
 
 </script>
+<script>
+
+    async function saveTranscriptFavorite(button) {
+
+        const formData =
+            new URLSearchParams();
 
 
+        formData.append(
+            "videoId",
+            button.dataset.videoId
+        );
+
+        formData.append(
+            "title",
+            button.dataset.title
+        );
+
+        formData.append(
+            "thumbnailUrl",
+            button.dataset.thumbnail
+        );
+
+        formData.append(
+            "channelTitle",
+            button.dataset.channel
+        );
+
+
+        const csrfToken =
+            document
+                .querySelector(
+                    'meta[name="_csrf"]'
+                )
+                ?.getAttribute("content");
+
+
+        const csrfHeader =
+            document
+                .querySelector(
+                    'meta[name="_csrf_header"]'
+                )
+                ?.getAttribute("content");
+
+
+        const headers = {
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        };
+
+
+        if (csrfToken && csrfHeader) {
+
+            headers[csrfHeader] =
+                csrfToken;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/favorites/add",
+                    {
+                        method: "POST",
+                        headers: headers,
+                        body: formData
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            button.classList.remove(
+                "bg-yellow-500",
+                "hover:bg-yellow-600"
+            );
+
+
+            button.classList.add(
+                "bg-green-600",
+                "hover:bg-green-700"
+            );
+
+
+            button.innerHTML = `
+                <i class="bi bi-star-fill"></i>
+                <span>
+                    ${result.success
+                ? "Added to Favorites"
+                : "Already in Favorites"}
+                </span>
+            `;
+
+
+            button.disabled = true;
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to add to favorites."
+            );
+        }
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            const button =
+                document.getElementById(
+                    "transcriptFavoriteBtn"
+                );
+
+
+            if (button &&
+                !button.disabled) {
+
+                button.addEventListener(
+                    "click",
+                    () =>
+                        saveTranscriptFavorite(
+                            button
+                        )
+                );
+            }
+        }
+    );
+
+</script>
+<script>
+    document.getElementById("transcriptForm")?.addEventListener("submit", function () {
+
+        const button = document.getElementById("transcriptSubmitBtn");
+        const normalText = document.getElementById("transcriptBtnText");
+        const loadingText = document.getElementById("transcriptLoadingText");
+
+        if (!button) return;
+
+        button.disabled = true;
+        button.classList.add("opacity-70", "cursor-not-allowed");
+
+        normalText.classList.add("hidden");
+        loadingText.classList.remove("hidden");
+    });
+</script>
 </body>
 
 </html>

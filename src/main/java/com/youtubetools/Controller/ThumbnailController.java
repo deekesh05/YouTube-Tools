@@ -1,5 +1,6 @@
 package com.youtubetools.Controller;
 
+import com.youtubetools.Service.FavoriteService;
 import com.youtubetools.Service.HistoryService;
 import com.youtubetools.Service.ThumbnailService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ public class ThumbnailController {
 
     private final ThumbnailService service;
     private final HistoryService historyService;
+    private final FavoriteService favoriteService;
 
 
     @GetMapping("/thumbnail")
@@ -32,7 +34,6 @@ public class ThumbnailController {
             Model model,
 
             Authentication authentication) {
-
 
         String videoId =
                 service.extractVideoId(
@@ -66,6 +67,35 @@ public class ThumbnailController {
         model.addAttribute(
                 "videoUrlOrId",
                 videoUrlOrId
+        );
+
+
+        model.addAttribute(
+                "videoId",
+                videoId
+        );
+
+
+        // =====================================================
+        // FAVORITE STATUS
+        // =====================================================
+
+        boolean isFavorite = false;
+
+        if (authentication != null &&
+                authentication.isAuthenticated()) {
+
+            isFavorite =
+                    favoriteService.isFavorite(
+                            authentication,
+                            videoId
+                    );
+        }
+
+
+        model.addAttribute(
+                "isFavorite",
+                isFavorite
         );
 
 

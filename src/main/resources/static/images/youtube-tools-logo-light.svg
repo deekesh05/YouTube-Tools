@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 150" role="img" aria-labelledby="title desc">
+  <title id="title">YouTube Tools</title>
+  <desc id="desc">YouTube Tools logo with a modern play-button icon</desc>
+  <defs>
+    <linearGradient id="playGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3d3d"/>
+      <stop offset="55%" stop-color="#ff1744"/>
+      <stop offset="100%" stop-color="#d500f9"/>
+    </linearGradient>
+    <linearGradient id="depthGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="toolsGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icon -->
+  <g transform="translate(10 15)">
+    <rect x="9" y="12" width="112" height="100" rx="29"
+          fill="url(#depthGradient)" opacity=".95"/>
+    <rect x="0" y="0" width="112" height="100" rx="29"
+          fill="url(#playGradient)"/>
+    <path d="M46 29 L46 71 L80 50 Z" fill="#ffffff"/>
+    <circle cx="94" cy="13" r="6" fill="#22d3ee"/>
+    <circle cx="108" cy="25" r="4" fill="#8b5cf6"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="145" y="92"
+        font-family="Inter, Segoe UI, Arial, sans-serif"
+        font-size="58"
+        font-weight="800"
+        letter-spacing="-2"
+        fill="#0f172a">
+    YouTube
+  </text>
+  <text x="398" y="92"
+        font-family="Inter, Segoe UI, Arial, sans-serif"
+        font-size="58"
+        font-weight="800"
+        letter-spacing="-2"
+        fill="url(#toolsGradient)">
+    Tools
+  </text>
+</svg>

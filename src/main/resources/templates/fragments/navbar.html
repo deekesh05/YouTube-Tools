@@ -1,139 +1,453 @@
-<nav class="bg-white dark:bg-slate-800 shadow-lg border-b border-slate-200 dark:border-slate-700 mt-4 mb-8 rounded-2xl transition-colors duration-300"
-     th:fragment="navbar"
-     xmlns:th="http://www.thymeleaf.org"
-     xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<nav
+        class="bg-white
+               dark:bg-slate-800
+               shadow-lg
+               border-b
+               border-slate-200
+               dark:border-slate-700
+               mt-2
+               lg:mt-4
+               mb-4
+               lg:mb-8
+               rounded-xl
+               lg:rounded-2xl
+               transition-colors
+               duration-300
+               relative
+               z-50"
 
-    <div class="container mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
+        th:fragment="navbar"
 
-            <!-- Logo -->
+        xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+
+    <div class="container mx-auto px-3 sm:px-4">
+
+
+        <!-- =====================================================
+             TOP BAR
+        ====================================================== -->
+
+        <div class="flex items-center justify-between py-2.5 lg:py-3">
+
+
+            <!-- =================================================
+                 LOGO
+            ================================================== -->
+
             <a href="/"
-               class="text-blue-600 dark:text-blue-400 font-bold text-xl hover:text-blue-700 dark:hover:text-blue-300 transition-colors duration-200">
-                YouTube Tools
+               class="flex items-center shrink-0 group">
+
+                <!-- Light -->
+                <img
+                        src="/images/youtube-tools-logo-light.svg"
+                        alt="YouTube Tools"
+
+                        class="h-8
+                               sm:h-9
+                               lg:h-10
+                               w-auto
+                               object-contain
+                               dark:hidden
+                               transition-transform
+                               duration-200
+                               group-hover:scale-105">
+
+
+                <!-- Dark -->
+                <img
+                        src="/images/youtube-tools-logo-dark.svg"
+                        alt="YouTube Tools"
+
+                        class="hidden
+                               dark:block
+                               h-8
+                               sm:h-9
+                               lg:h-10
+                               w-auto
+                               object-contain
+                               transition-transform
+                               duration-200
+                               group-hover:scale-105">
+
             </a>
 
-            <!-- Navigation Links -->
-            <div class="flex items-center space-x-6">
+
+            <!-- =================================================
+                 DESKTOP NAVIGATION
+                 1024px+
+            ================================================== -->
+
+            <div class="hidden lg:flex items-center gap-1">
+
+
+                <!-- ================= PUBLIC TOOLS ================= -->
+
 
                 <!-- SEO Tags -->
+
                 <a href="/"
-                   class="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg"
-                   th:classappend="${activePage} == 'home' ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20'">
+                   class="text-slate-700
+                          dark:text-slate-300
+                          hover:text-blue-600
+                          dark:hover:text-blue-400
+                          hover:bg-slate-100
+                          dark:hover:bg-slate-700
+                          transition-all
+                          duration-200
+                          py-2
+                          px-2.5
+                          rounded-lg
+                          text-sm
+                          font-medium"
+
+                   th:classappend="${activePage == 'home'}
+                        ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                        : ''">
+
                     SEO Tags
+
                 </a>
+
 
                 <!-- Thumbnails -->
+
                 <a href="/thumbnail"
-                   class="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg"
-                   th:classappend="${activePage} == 'thumbnails' ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20'">
+                   class="text-slate-700
+                          dark:text-slate-300
+                          hover:text-blue-600
+                          dark:hover:text-blue-400
+                          hover:bg-slate-100
+                          dark:hover:bg-slate-700
+                          transition-all
+                          duration-200
+                          py-2
+                          px-2.5
+                          rounded-lg
+                          text-sm
+                          font-medium"
+
+                   th:classappend="${activePage == 'thumbnails'}
+                        ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                        : ''">
+
                     Thumbnails
+
                 </a>
 
+
                 <!-- Video Data -->
+
                 <a href="/video-details"
-                   class="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-2 px-3 rounded-lg"
-                   th:classappend="${activePage} == 'video' ? 'text-blue-600 dark:text-blue-400 font-semibold bg-blue-50 dark:bg-blue-900/20'">
+                   class="text-slate-700
+                          dark:text-slate-300
+                          hover:text-blue-600
+                          dark:hover:text-blue-400
+                          hover:bg-slate-100
+                          dark:hover:bg-slate-700
+                          transition-all
+                          duration-200
+                          py-2
+                          px-2.5
+                          rounded-lg
+                          text-sm
+                          font-medium"
+
+                   th:classappend="${activePage == 'video'}
+                        ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                        : ''">
+
                     Video Data
+
                 </a>
+
 
                 <!-- Transcript -->
 
                 <a href="/transcript"
-                   class="text-slate-700 dark:text-slate-300
-          hover:text-blue-600
-          dark:hover:text-blue-400
-          transition-colors duration-200
-          py-2 px-3 rounded-lg"
+                   class="text-slate-700
+                          dark:text-slate-300
+                          hover:text-blue-600
+                          dark:hover:text-blue-400
+                          hover:bg-slate-100
+                          dark:hover:bg-slate-700
+                          transition-all
+                          duration-200
+                          py-2
+                          px-2.5
+                          rounded-lg
+                          text-sm
+                          font-medium"
 
-                   th:classappend="${activePage} == 'transcript'
-                   ? 'text-blue-600 dark:text-blue-400
-                      font-semibold
-                      bg-blue-50 dark:bg-blue-900/20'">
+                   th:classappend="${activePage == 'transcript'}
+                        ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                        : ''">
 
                     Transcript
 
                 </a>
 
-                <!-- History - Logged-in users only -->
-                <div sec:authorize="isAuthenticated()">
 
-                    <a
-                            sec:authorize="isAuthenticated()"
-                            href="/history"
-                            th:classappend="${activePage == 'history'}
-            ? 'text-blue-600 dark:text-blue-400'
-            : 'text-slate-600 dark:text-slate-300'">
+                <!-- ================= AUTHENTICATED ================= -->
 
-                        <i class="bi bi-clock-history"></i>
+                <div
+                        sec:authorize="isAuthenticated()"
+                        class="flex items-center gap-1 ml-1">
 
-                        History
+
+                    <!-- History -->
+
+                    <a href="/history"
+                       class="flex
+                              items-center
+                              gap-1.5
+                              text-slate-700
+                              dark:text-slate-300
+                              hover:text-blue-600
+                              dark:hover:text-blue-400
+                              hover:bg-slate-100
+                              dark:hover:bg-slate-700
+                              transition-all
+                              duration-200
+                              py-2
+                              px-2.5
+                              rounded-lg
+                              text-sm
+                              font-medium"
+
+                       th:classappend="${activePage == 'history'}
+                            ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                            : ''">
+
+                        <i class="bi bi-clock-history text-sm"></i>
+                        <span>History</span>
+
+                    </a>
+
+
+                    <!-- Favorites -->
+
+                    <a href="/favorites"
+                       class="flex
+                              items-center
+                              gap-1.5
+                              text-slate-700
+                              dark:text-slate-300
+                              hover:text-blue-600
+                              dark:hover:text-blue-400
+                              hover:bg-slate-100
+                              dark:hover:bg-slate-700
+                              transition-all
+                              duration-200
+                              py-2
+                              px-2.5
+                              rounded-lg
+                              text-sm
+                              font-medium"
+
+                       th:classappend="${activePage == 'favorites'}
+                            ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                            : ''">
+
+                        <i class="bi bi-star text-sm"></i>
+                        <span>Favorites</span>
+
+                    </a>
+
+
+                    <!-- Dashboard -->
+
+                    <a href="/dashboard"
+                       class="flex
+                              items-center
+                              gap-1.5
+                              text-slate-700
+                              dark:text-slate-300
+                              hover:text-blue-600
+                              dark:hover:text-blue-400
+                              hover:bg-slate-100
+                              dark:hover:bg-slate-700
+                              transition-all
+                              duration-200
+                              py-2
+                              px-2.5
+                              rounded-lg
+                              text-sm
+                              font-medium"
+
+                       th:classappend="${activePage == 'dashboard'}
+                            ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                            : ''">
+
+                        <i class="bi bi-grid text-sm"></i>
+                        <span>Dashboard</span>
+
+                    </a>
+
+
+                    <!-- Saved -->
+
+                    <a href="/saved-data"
+                       class="flex
+                              items-center
+                              gap-1.5
+                              text-slate-700
+                              dark:text-slate-300
+                              hover:text-blue-600
+                              dark:hover:text-blue-400
+                              hover:bg-slate-100
+                              dark:hover:bg-slate-700
+                              transition-all
+                              duration-200
+                              py-2
+                              px-2.5
+                              rounded-lg
+                              text-sm
+                              font-medium"
+
+                       th:classappend="${activePage == 'saved'}
+                            ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                            : ''">
+
+                        <i class="bi bi-bookmark text-sm"></i>
+                        <span>Saved</span>
+
+                    </a>
+
+
+                    <!-- Profile -->
+
+                    <a href="/profile"
+                       class="flex
+                              items-center
+                              gap-1.5
+                              text-slate-700
+                              dark:text-slate-300
+                              hover:text-blue-600
+                              dark:hover:text-blue-400
+                              hover:bg-slate-100
+                              dark:hover:bg-slate-700
+                              transition-all
+                              duration-200
+                              py-2
+                              px-2.5
+                              rounded-lg
+                              text-sm
+                              font-medium"
+
+                       th:classappend="${activePage == 'profile'}
+                            ? ' text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20'
+                            : ''">
+
+                        <i class="bi bi-person text-sm"></i>
+                        <span>Profile</span>
 
                     </a>
 
                 </div>
-                <!-- Guest Authentication -->
 
-                <div sec:authorize="!isAuthenticated()"
-                     class="flex items-center gap-2">
+
+                <!-- ================= GUEST ================= -->
+
+                <div
+                        sec:authorize="!isAuthenticated()"
+                        class="flex items-center gap-1 ml-2">
+
 
                     <a href="/login"
                        class="text-slate-700
-              dark:text-slate-300
-              hover:text-blue-600
-              dark:hover:text-blue-400
-              py-2 px-3
-              rounded-lg
-              transition-colors">
+                              dark:text-slate-300
+                              hover:text-blue-600
+                              dark:hover:text-blue-400
+                              hover:bg-slate-100
+                              dark:hover:bg-slate-700
+                              transition-all
+                              duration-200
+                              py-2
+                              px-3
+                              rounded-lg
+                              text-sm
+                              font-medium">
 
                         Login
 
                     </a>
 
+
                     <a href="/register"
                        class="bg-blue-600
-              hover:bg-blue-700
-              text-white
-              py-2 px-4
-              rounded-lg
-              transition-colors">
+                              hover:bg-blue-700
+                              text-white
+                              py-2
+                              px-3.5
+                              rounded-lg
+                              text-sm
+                              font-semibold
+                              shadow-sm
+                              transition-all
+                              duration-200">
 
                         Register
 
                     </a>
 
                 </div>
-                <!-- Logged-in User -->
 
-                <div sec:authorize="isAuthenticated()"
-                     class="flex items-center gap-3">
 
-    <span class="text-sm
-                 text-slate-600
-                 dark:text-slate-300">
+                <!-- ================= USER ================= -->
 
-        Hi,
-        <span sec:authentication="name"
-              class="font-semibold
-                     text-blue-600
-                     dark:text-blue-400">
-        </span>
+                <div
+                        sec:authorize="isAuthenticated()"
+                        class="flex
+                               items-center
+                               gap-2
+                               ml-2
+                               pl-2
+                               border-l
+                               border-slate-200
+                               dark:border-slate-700">
 
-    </span>
 
-                    <form th:action="@{/logout}"
-                          method="post">
+                    <span
+                            class="text-xs
+                                   text-slate-500
+                                   dark:text-slate-400
+                                   whitespace-nowrap">
 
-                        <input type="hidden"
-                               th:name="${_csrf.parameterName}"
-                               th:value="${_csrf.token}">
+                        Hi,
 
-                        <button type="submit"
+                        <span
+                                sec:authentication="name"
+                                class="font-semibold
+                                       text-blue-600
+                                       dark:text-blue-400">
+                        </span>
+
+                    </span>
+
+
+                    <form
+                            th:action="@{/logout}"
+                            method="post">
+
+                        <input
+                                type="hidden"
+                                th:name="${_csrf.parameterName}"
+                                th:value="${_csrf.token}">
+
+                        <button
+                                type="submit"
                                 class="bg-red-500
-                       hover:bg-red-600
-                       text-white
-                       py-2 px-4
-                       rounded-lg
-                       transition-colors">
+                                       hover:bg-red-600
+                                       text-white
+                                       py-2
+                                       px-3
+                                       rounded-lg
+                                       text-sm
+                                       font-medium
+                                       transition-all
+                                       duration-200">
 
                             Logout
 
@@ -142,41 +456,634 @@
                     </form>
 
                 </div>
-                <!-- Theme Toggle Button -->
-                <button id="themeToggle"
+
+
+                <!-- DESKTOP THEME -->
+
+                <button
+                        id="themeToggleDesktop"
                         type="button"
-                        class="w-10 h-10 flex items-center justify-center border border-blue-600 dark:border-blue-400 text-blue-600 dark:text-blue-400 bg-transparent hover:bg-blue-600 hover:text-white dark:hover:bg-blue-400 dark:hover:text-slate-900 rounded-lg transition-all duration-200">
-                    <i id="themeIcon" class="bi bi-sun-fill"></i>
+                        class="w-9
+                               h-9
+                               ml-1
+                               flex
+                               items-center
+                               justify-center
+                               border
+                               border-blue-600
+                               dark:border-blue-400
+                               text-blue-600
+                               dark:text-blue-400
+                               hover:bg-blue-600
+                               hover:text-white
+                               dark:hover:bg-blue-400
+                               dark:hover:text-slate-900
+                               rounded-lg
+                               transition-all
+                               duration-200">
+
+                    <i id="themeIconDesktop"
+                       class="bi bi-sun-fill text-sm"></i>
+
                 </button>
 
             </div>
+
+
+            <!-- =================================================
+                 MOBILE MENU BUTTON
+                 < 1024px
+            ================================================== -->
+
+            <button
+                    id="mobileMenuButton"
+                    type="button"
+
+                    class="lg:hidden
+                           w-10
+                           h-10
+                           flex
+                           items-center
+                           justify-center
+                           rounded-lg
+                           border
+                           border-slate-300
+                           dark:border-slate-600
+                           text-slate-700
+                           dark:text-slate-200
+                           hover:bg-slate-100
+                           dark:hover:bg-slate-700
+                           transition"
+
+                    aria-label="Open navigation menu"
+                    aria-expanded="false">
+
+                <i
+                        id="mobileMenuIcon"
+                        class="bi bi-list text-xl">
+                </i>
+
+            </button>
+
         </div>
+
+
+        <!-- =====================================================
+             MOBILE NAVIGATION
+        ====================================================== -->
+
+        <div
+                id="mobileMenu"
+
+                class="hidden
+                       lg:hidden
+                       border-t
+                       border-slate-200
+                       dark:border-slate-700
+                       pt-3
+                       pb-3">
+
+
+            <div class="flex flex-col gap-1">
+
+
+                <!-- SEO Tags -->
+
+                <a href="/"
+                   class="mobile-nav-link"
+                   th:classappend="${activePage == 'home'}
+                        ? ' mobile-nav-active'
+                        : ''">
+
+                    <i class="bi bi-search"></i>
+                    <span>SEO Tags</span>
+
+                </a>
+
+
+                <!-- Thumbnails -->
+
+                <a href="/thumbnail"
+                   class="mobile-nav-link"
+                   th:classappend="${activePage == 'thumbnails'}
+                        ? ' mobile-nav-active'
+                        : ''">
+
+                    <i class="bi bi-image"></i>
+                    <span>Thumbnails</span>
+
+                </a>
+
+
+                <!-- Video Data -->
+
+                <a href="/video-details"
+                   class="mobile-nav-link"
+                   th:classappend="${activePage == 'video'}
+                        ? ' mobile-nav-active'
+                        : ''">
+
+                    <i class="bi bi-film"></i>
+                    <span>Video Data</span>
+
+                </a>
+
+
+                <!-- Transcript -->
+
+                <a href="/transcript"
+                   class="mobile-nav-link"
+                   th:classappend="${activePage == 'transcript'}
+                        ? ' mobile-nav-active'
+                        : ''">
+
+                    <i class="bi bi-file-text"></i>
+                    <span>Transcript</span>
+
+                </a>
+
+
+                <!-- Authenticated links -->
+
+                <div
+                        sec:authorize="isAuthenticated()"
+                        class="border-t
+                               border-slate-200
+                               dark:border-slate-700
+                               my-2
+                               pt-2">
+
+
+                    <!-- History -->
+
+                    <a href="/history"
+                       class="mobile-nav-link"
+                       th:classappend="${activePage == 'history'}
+                            ? ' mobile-nav-active'
+                            : ''">
+
+                        <i class="bi bi-clock-history"></i>
+                        <span>History</span>
+
+                    </a>
+
+
+                    <!-- Favorites -->
+
+                    <a href="/favorites"
+                       class="mobile-nav-link"
+                       th:classappend="${activePage == 'favorites'}
+                            ? ' mobile-nav-active'
+                            : ''">
+
+                        <i class="bi bi-star"></i>
+                        <span>Favorites</span>
+
+                    </a>
+
+
+                    <!-- Dashboard -->
+
+                    <a href="/dashboard"
+                       class="mobile-nav-link"
+                       th:classappend="${activePage == 'dashboard'}
+                            ? ' mobile-nav-active'
+                            : ''">
+
+                        <i class="bi bi-grid"></i>
+                        <span>Dashboard</span>
+
+                    </a>
+
+
+                    <!-- Saved -->
+
+                    <a href="/saved-data"
+                       class="mobile-nav-link"
+                       th:classappend="${activePage == 'saved'}
+                            ? ' mobile-nav-active'
+                            : ''">
+
+                        <i class="bi bi-bookmark"></i>
+                        <span>Saved</span>
+
+                    </a>
+
+
+                    <!-- Profile -->
+
+                    <a href="/profile"
+                       class="mobile-nav-link"
+                       th:classappend="${activePage == 'profile'}
+                            ? ' mobile-nav-active'
+                            : ''">
+
+                        <i class="bi bi-person"></i>
+                        <span>Profile</span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- Guest -->
+
+                <div
+                        sec:authorize="!isAuthenticated()"
+                        class="border-t
+                               border-slate-200
+                               dark:border-slate-700
+                               my-2
+                               pt-2">
+
+
+                    <a href="/login"
+                       class="mobile-nav-link">
+
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        <span>Login</span>
+
+                    </a>
+
+
+                    <a href="/register"
+                       class="mobile-nav-link">
+
+                        <i class="bi bi-person-plus"></i>
+                        <span>Register</span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- Logged-in user -->
+
+                <div
+                        sec:authorize="isAuthenticated()"
+                        class="border-t
+                               border-slate-200
+                               dark:border-slate-700
+                               my-2
+                               pt-3">
+
+
+                    <div
+                            class="px-3
+                                   py-2
+                                   text-sm
+                                   text-slate-500
+                                   dark:text-slate-400">
+
+                        Hi,
+
+                        <span
+                                sec:authentication="name"
+                                class="font-semibold
+                                       text-blue-600
+                                       dark:text-blue-400
+                                       break-all">
+                        </span>
+
+                    </div>
+
+
+                    <form
+                            th:action="@{/logout}"
+                            method="post"
+                            class="px-1">
+
+                        <input
+                                type="hidden"
+                                th:name="${_csrf.parameterName}"
+                                th:value="${_csrf.token}">
+
+                        <button
+                                type="submit"
+                                class="mobile-nav-link
+                                       w-full
+                                       text-left
+                                       text-red-500
+                                       dark:text-red-400">
+
+                            <i class="bi bi-box-arrow-right"></i>
+
+                            <span>Logout</span>
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- Mobile Theme -->
+
+                <button
+                        id="themeToggleMobile"
+                        type="button"
+                        class="mobile-nav-link
+                               w-full
+                               text-left">
+
+                    <i
+                            id="themeIconMobile"
+                            class="bi bi-sun-fill">
+                    </i>
+
+                    <span id="themeTextMobile">
+                        Light Mode
+                    </span>
+
+                </button>
+
+
+            </div>
+
+        </div>
+
     </div>
 
 
-    <script>
-        const toggleBtn = document.getElementById('themeToggle');
-        const icon = document.getElementById('themeIcon')
+    <!-- =====================================================
+         MOBILE NAV CSS
+    ====================================================== -->
 
-        toggleBtn.addEventListener('click', function () {
-            const htmlTag = document.documentElement;
+    <style>
 
-            if (htmlTag.classList.contains('dark')) {
-                htmlTag.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                icon.className = 'bi bi-sun-fill';
-            } else {
-                htmlTag.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-                icon.className = 'bi bi-moon-fill';
-            }
-        });
+        .mobile-nav-link {
 
-        // Page load par check karo
-        if (localStorage.getItem('theme') === 'dark') {
-            document.documentElement.classList.add('dark');
-            icon.className = 'bi bi-moon-fill';
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            width: 100%;
+
+            padding: 10px 12px;
+
+            border-radius: 10px;
+
+            color: #334155;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            transition:
+                    background-color .2s ease,
+                    color .2s ease;
+
         }
 
+
+        .mobile-nav-link:hover {
+
+            background-color: #f1f5f9;
+
+            color: #2563eb;
+
+        }
+
+
+        .mobile-nav-active {
+
+            background-color: #eff6ff;
+
+            color: #2563eb;
+
+        }
+
+
+        .dark .mobile-nav-link {
+
+            color: #cbd5e1;
+
+        }
+
+
+        .dark .mobile-nav-link:hover {
+
+            background-color: #334155;
+
+            color: #60a5fa;
+
+        }
+
+
+        .dark .mobile-nav-active {
+
+            background-color: rgba(30, 64, 175, .25);
+
+            color: #60a5fa;
+
+        }
+
+    </style>
+
+
+    <!-- =====================================================
+         NAVBAR SCRIPT
+    ====================================================== -->
+
+    <script>
+
+        const mobileMenuButton =
+            document.getElementById("mobileMenuButton");
+
+        const mobileMenu =
+            document.getElementById("mobileMenu");
+
+        const mobileMenuIcon =
+            document.getElementById("mobileMenuIcon");
+
+
+        /*
+         * MOBILE MENU
+         */
+
+        if (mobileMenuButton) {
+
+            mobileMenuButton.addEventListener(
+                "click",
+                function () {
+
+                    const isOpen =
+                        !mobileMenu.classList.contains("hidden");
+
+                    mobileMenu.classList.toggle(
+                        "hidden"
+                    );
+
+                    mobileMenuButton.setAttribute(
+                        "aria-expanded",
+                        String(!isOpen)
+                    );
+
+
+                    if (!isOpen) {
+
+                        mobileMenuIcon.className =
+                            "bi bi-x-lg text-lg";
+
+                    } else {
+
+                        mobileMenuIcon.className =
+                            "bi bi-list text-xl";
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+         * THEME
+         */
+
+        const desktopToggle =
+            document.getElementById(
+                "themeToggleDesktop"
+            );
+
+        const mobileToggle =
+            document.getElementById(
+                "themeToggleMobile"
+            );
+
+        const desktopIcon =
+            document.getElementById(
+                "themeIconDesktop"
+            );
+
+        const mobileIcon =
+            document.getElementById(
+                "themeIconMobile"
+            );
+
+        const mobileText =
+            document.getElementById(
+                "themeTextMobile"
+            );
+
+
+        function updateThemeUI() {
+
+            const isDark =
+                document.documentElement
+                    .classList
+                    .contains("dark");
+
+
+            if (desktopIcon) {
+
+                desktopIcon.className =
+                    isDark
+                        ? "bi bi-moon-fill text-sm"
+                        : "bi bi-sun-fill text-sm";
+
+            }
+
+
+            if (mobileIcon) {
+
+                mobileIcon.className =
+                    isDark
+                        ? "bi bi-moon-fill"
+                        : "bi bi-sun-fill";
+
+            }
+
+
+            if (mobileText) {
+
+                mobileText.textContent =
+                    isDark
+                        ? "Dark Mode"
+                        : "Light Mode";
+
+            }
+
+        }
+
+
+        function toggleTheme() {
+
+            const htmlTag =
+                document.documentElement;
+
+
+            const isDark =
+                htmlTag.classList.contains("dark");
+
+
+            if (isDark) {
+
+                htmlTag.classList.remove("dark");
+
+                localStorage.setItem(
+                    "theme",
+                    "light"
+                );
+
+            } else {
+
+                htmlTag.classList.add("dark");
+
+                localStorage.setItem(
+                    "theme",
+                    "dark"
+                );
+
+            }
+
+
+            updateThemeUI();
+
+        }
+
+
+        if (desktopToggle) {
+
+            desktopToggle.addEventListener(
+                "click",
+                toggleTheme
+            );
+
+        }
+
+
+        if (mobileToggle) {
+
+            mobileToggle.addEventListener(
+                "click",
+                toggleTheme
+            );
+
+        }
+
+
+        /*
+         * PAGE LOAD
+         */
+
+        if (
+            localStorage.getItem("theme")
+            === "dark"
+        ) {
+
+            document.documentElement
+                .classList
+                .add("dark");
+
+        }
+
+
+        updateThemeUI();
+
     </script>
+
 </nav>

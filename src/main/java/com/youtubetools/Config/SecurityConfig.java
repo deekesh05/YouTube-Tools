@@ -32,7 +32,8 @@ public class SecurityConfig {
                                 "/register",
                                 "/thumbnail",
                                 "/video-details",
-                                "/transcript"
+                                "/transcript",
+                                "/error/**"
                         ).permitAll()
 
                         // Public tool operations
@@ -47,12 +48,20 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/favicon.ico"
+
+
                         ).permitAll()
 
                         // Everything else requires login
                         .requestMatchers(
                                 "/history",
-                                "/history/**"
+                                "/history/**",
+                                "/favorites",
+                                "/favorites/**",
+                                "/dashboard",
+                                "/profile",
+                                "/profile/**",
+                                "/saved-data"
                         ).authenticated()
 
                         .anyRequest().authenticated()
@@ -64,6 +73,12 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/", true)
                         .failureUrl("/login?error")
                         .permitAll()
+                )
+
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler((request, response, accessDeniedException) ->
+                                response.sendError(403)
+                        )
                 )
 
                 .logout(logout -> logout

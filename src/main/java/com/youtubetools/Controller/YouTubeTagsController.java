@@ -2,6 +2,7 @@ package com.youtubetools.Controller;
 
 import com.youtubetools.Model.SearchVideo;
 import com.youtubetools.Model.Video;
+import com.youtubetools.Service.FavoriteService;
 import com.youtubetools.Service.HistoryService;
 import com.youtubetools.Service.YouTubeService;
 
@@ -14,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Controller
 @RequestMapping("/youtube")
 public class YouTubeTagsController {
@@ -23,6 +27,9 @@ public class YouTubeTagsController {
 
     @Autowired
     private HistoryService historyService;
+
+    @Autowired
+    private FavoriteService favoriteService;
 
     @Value("${youtube.api.key}")
     private String apikey;
@@ -46,7 +53,7 @@ public class YouTubeTagsController {
 
             model.addAttribute(
                     "error",
-                    "API key is not configured"
+                    "Unable to generate SEO tags. Please try again later."
             );
 
             return "home";
@@ -87,6 +94,52 @@ public class YouTubeTagsController {
             );
 
 
+            if (authentication != null &&
+                    authentication.isAuthenticated()) {
+
+                Set<String> favoriteVideoIds =
+                        new HashSet<>();
+
+                if (result.getPrimaryVideo() != null &&
+                        favoriteService.isFavorite(
+                                authentication,
+                                result.getPrimaryVideo().getId())) {
+
+                    favoriteVideoIds.add(
+                            result.getPrimaryVideo().getId()
+                    );
+                }
+
+                if (result.getRelatedVideos() != null) {
+
+                    result.getRelatedVideos()
+                            .forEach(video -> {
+
+                                if (favoriteService.isFavorite(
+                                        authentication,
+                                        video.getId())) {
+
+                                    favoriteVideoIds.add(
+                                            video.getId()
+                                    );
+                                }
+
+                            });
+                }
+
+                model.addAttribute(
+                        "favoriteVideoIds",
+                        favoriteVideoIds
+                );
+
+            } else {
+
+                model.addAttribute(
+                        "favoriteVideoIds",
+                        Set.of()
+                );
+            }
+
             // Save history only for logged-in users
             if (authentication != null &&
                     authentication.isAuthenticated()) {
@@ -120,11 +173,13 @@ public class YouTubeTagsController {
 
         } catch (Exception e) {
 
+            // Actual API exception console me rahegi
             e.printStackTrace();
 
+            // User ko technical details nahi dikhani
             model.addAttribute(
                     "error",
-                    e.getMessage()
+                    "Unable to generate SEO tags. Please try again later."
             );
 
             return "home";

@@ -1,5 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<meta name="_csrf"
+      th:content="${_csrf.token}">
+
+<meta name="_csrf_header"
+      th:content="${_csrf.headerName}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -74,16 +82,29 @@
 
     <!-- ✅ Form -->
     <div class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-lg p-6 mb-8">
-        <form th:action="@{/get-thumbnail}" method="post">
+        <form id="thumbnailForm"
+              th:action="@{/get-thumbnail}"
+              method="post">
             <label for="videoUrlOrId" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                 YouTube Video URL or ID
             </label>
             <input type="text" id="videoUrlOrId" name="videoUrlOrId"
                    class="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-colors duration-200 mb-4"
                    required>
-            <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-6 rounded-lg shadow-lg transition-colors duration-200">
-                Get Thumbnail
+            <button
+                    id="thumbnailSubmitBtn"
+                    type="submit"
+                    class="bg-red-600 hover:bg-red-700 text-white font-medium px-6 py-3 rounded-lg">
+
+    <span id="thumbnailBtnText">
+        <i class="bi bi-image"></i>
+        Get Thumbnail
+    </span>
+
+                <span id="thumbnailLoadingText" class="hidden">
+        <i class="bi bi-arrow-repeat animate-spin"></i>
+        Fetching thumbnail...
+    </span>
             </button>
         </form>
 
@@ -100,6 +121,47 @@
                     class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
                 Download Thumbnail
             </button>
+            <div sec:authorize="isAuthenticated()"
+                 class="flex justify-end mb-4">
+
+                <button
+                        type="button"
+                        id="thumbnailFavoriteBtn"
+
+                        class="text-white font-medium py-2 px-4 rounded-lg
+                   transition-colors duration-200
+                   flex items-center gap-2"
+
+                        th:classappend="${isFavorite}
+                ? ' bg-green-600 hover:bg-green-700'
+                : ' bg-yellow-500 hover:bg-yellow-600'"
+
+                        th:data-video-id="${videoId}"
+
+                        th:data-title="'YouTube Thumbnail'"
+
+                        th:data-thumbnail="${thumbnailUrl}"
+
+                        th:data-channel="'YouTube'"
+
+                        th:disabled="${isFavorite}">
+
+                    <i
+                            class="bi"
+                            th:classappend="${isFavorite}
+                    ? ' bi-star-fill'
+                    : ' bi-star'">
+                    </i>
+
+                    <span
+                            th:text="${isFavorite}
+                    ? 'Already in Favorites'
+                    : 'Add to Favorites'">
+        </span>
+
+                </button>
+
+            </div>
         </div>
         <div class="thumb-box p-4">
             <img th:src="${thumbnailUrl}" alt="YouTube thumbnail high quality" class="w-full h-auto"
@@ -122,6 +184,157 @@
             .catch(() => alert('Failed to download thumbnail.'));
     }
 </script>
+<script>
 
+    async function saveThumbnailFavorite(button) {
+
+        const formData =
+            new URLSearchParams();
+
+
+        formData.append(
+            "videoId",
+            button.dataset.videoId
+        );
+
+        formData.append(
+            "title",
+            button.dataset.title
+        );
+
+        formData.append(
+            "thumbnailUrl",
+            button.dataset.thumbnail
+        );
+
+        formData.append(
+            "channelTitle",
+            button.dataset.channel
+        );
+
+
+        const csrfToken =
+            document
+                .querySelector(
+                    'meta[name="_csrf"]'
+                )
+                ?.getAttribute("content");
+
+
+        const csrfHeader =
+            document
+                .querySelector(
+                    'meta[name="_csrf_header"]'
+                )
+                ?.getAttribute("content");
+
+
+        const headers = {
+            "Content-Type":
+                "application/x-www-form-urlencoded"
+        };
+
+
+        if (csrfToken && csrfHeader) {
+
+            headers[csrfHeader] =
+                csrfToken;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/favorites/add",
+                    {
+                        method: "POST",
+                        headers: headers,
+                        body: formData
+                    }
+                );
+
+
+            const result =
+                await response.json();
+
+
+            button.classList.remove(
+                "bg-yellow-500",
+                "hover:bg-yellow-600"
+            );
+
+
+            button.classList.add(
+                "bg-green-600",
+                "hover:bg-green-700"
+            );
+
+
+            button.innerHTML = `
+                <i class="bi bi-star-fill"></i>
+                <span>
+                    ${result.success
+                ? "Added to Favorites"
+                : "Already in Favorites"}
+                </span>
+            `;
+
+
+            button.disabled = true;
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Unable to add to favorites."
+            );
+        }
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        () => {
+
+            const button =
+                document.getElementById(
+                    "thumbnailFavoriteBtn"
+                );
+
+
+            if (button &&
+                !button.disabled) {
+
+                button.addEventListener(
+                    "click",
+                    () =>
+                        saveThumbnailFavorite(
+                            button
+                        )
+                );
+            }
+        }
+    );
+
+</script>
+<script>
+    document.getElementById("thumbnailForm")?.addEventListener("submit", function () {
+
+        const button = document.getElementById("thumbnailSubmitBtn");
+        const normalText = document.getElementById("thumbnailBtnText");
+        const loadingText = document.getElementById("thumbnailLoadingText");
+
+        if (!button) return;
+
+        button.disabled = true;
+        button.classList.add("opacity-70", "cursor-not-allowed");
+
+        normalText.classList.add("hidden");
+        loadingText.classList.remove("hidden");
+    });
+</script>
 </body>
 </html>
